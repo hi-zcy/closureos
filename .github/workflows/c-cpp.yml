@@ -8,37 +8,54 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: install depends
-      run: sudo apt install -y dosfstools mtools gparted gcc m4 help2man make
-           sudo apt install -y cmake git bison libopts25 libselinux1-dev python3
-           sudo apt install -y libopts25-dev flex libfont-freetype-perl automake  
-           sudo apt install -y autotools-dev autopoint libfreetype6-dev texinfo  
-           sudo apt install -y autogen autoconf libtool libfuse3-3 unifont gettext 
-           sudo apt install -y pkg-config liblzma5 libdevmapper-dev binutils 
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          dosfstools mtools gparted gcc m4 help2man make \
+          cmake git bison libopts25 libselinux1-dev python3 \
+          libopts25-dev flex automake autotools-dev autopoint \
+          libfreetype6-dev texinfo autogen autoconf libtool \
+          libfuse3-3 unifont gettext pkg-config liblzma5 \
+          libdevmapper-dev binutils xorriso nasm
 
-    - name: install grub
-      run: wget https://ftp.gnu.org/gnu/grub/grub-2.06.tar.xz
-           tar -xf grub-2.06.tar.xz
-           cd grub-2.06/
-           mkdir EFI32 EFI64 BIOS
-           cd EFI64
-           ../configure --target=x86_64 --with-platform=efi && make -j$(nproc)
-           cd ../EFI32
-           ../configure --target=i386 --with-platform=efi && make -j$(nproc)
-           cd ../BIOS
-           ../configure --target=i386 --with-platform=pc --disable-nls && make -j$(nproc)
+    - name: Build GRUB
+      run: |
+        set -e
+        wget https://ftp.gnu.org/gnu/grub/grub-2.06.tar.xz
+        tar -xf grub-2.06.tar.xz
+        cd grub-2.06
+        
+        # Build EFI64
+        mkdir EFI64 && cd EFI64
+        ../configure --target=x86_64 --with-platform=efi
+        make -j$(nproc)
+        cd ..
+        
+        # Build EFI32
+        mkdir EFI32 && cd EFI32
+        ../configure --target=i386 --with-platform=efi
+        make -j$(nproc)
+        cd ..
+        
+        # Build BIOS
+        mkdir BIOS && cd BIOS
+        ../configure --target=i386 --with-platform=pc --disable-nls
+        make -j$(nproc)
 
-    - name: make
+    - name: Repack ISO
       run: ./scripts/repack_iso.sh
 
     - uses: actions/upload-artifact@v4
       with:
         name: iso
-        path: targets/x86_64/iso 
-
+        path: targets/x86_64/iso
