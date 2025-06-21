@@ -15,12 +15,12 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: install depends
-      run: sudo apt install -y dosfstools mtools gparted gcc \
-           cmake git bison libopts25 libselinux1-dev m4 help2man \
-           libopts25-dev flex libfont-freetype-perl automake make \
-           autotools-dev autopoint libfreetype6-dev texinfo python3 \
-           autogen autoconf libtool libfuse3-3 unifont gettext binutils \
-           pkg-config liblzma5 libdevmapper-dev
+      run: sudo apt install -y dosfstools mtools gparted gcc m4 help2man make
+           sudo apt install -y cmake git bison libopts25 libselinux1-dev python3
+           sudo apt install -y libopts25-dev flex libfont-freetype-perl automake  
+           sudo apt install -y autotools-dev autopoint libfreetype6-dev texinfo  
+           sudo apt install -y autogen autoconf libtool libfuse3-3 unifont gettext 
+           sudo apt install -y pkg-config liblzma5 libdevmapper-dev binutils 
 
     - name: install grub
       run: wget https://ftp.gnu.org/gnu/grub/grub-2.06.tar.xz
