@@ -55,7 +55,9 @@ jobs:
         echo Passed...
 
     - name: Repack ISO
-      run: ./scripts/repack_iso.sh
+      run: |
+        cmake -G Ninja
+        ./scripts/repack_iso.sh
 
     - uses: actions/upload-artifact@v4
       with:
