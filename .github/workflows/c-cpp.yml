@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     defaults:
       run:
         shell: bash
@@ -56,7 +56,7 @@ jobs:
 
     - name: Repack ISO
       run: |
-        cmake -G Ninja
+        # cmake -G Ninja
         ./scripts/repack_iso.sh
 
     - uses: actions/upload-artifact@v4
