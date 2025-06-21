@@ -31,9 +31,9 @@ jobs:
     - name: Build GRUB
       run: |
         set -e
-        wget https://ftp.gnu.org/gnu/grub/grub-2.06.tar.xz
-        tar -xf grub-2.06.tar.xz
-        cd grub-2.06
+        wget https://ftp.gnu.org/gnu/grub/grub-2.12.tar.xz
+        tar -xf grub-2.12.tar.xz
+        cd grub-2.12
         
         # Build EFI64
         mkdir EFI64 && cd EFI64
