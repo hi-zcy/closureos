@@ -1,0 +1,44 @@
+name: Build ISO
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: install depends
+      run: apt install -y dosfstools mtools gparted gcc \
+           cmake git bison libopts25 libselinux1-dev m4 help2man \
+           libopts25-dev flex libfont-freetype-perl automake make \
+           autotools-dev autopoint libfreetype6-dev texinfo python3 \
+           autogen autoconf libtool libfuse3-3 unifont gettext binutils \
+           pkg-config liblzma5 libdevmapper-dev
+
+    - name: install grub
+      run: wget https://ftp.gnu.org/gnu/grub/grub-2.06.tar.xz
+           tar -xf grub-2.06.tar.xz
+           cd grub-2.06/
+           mkdir EFI32 EFI64 BIOS
+           cd EFI64
+           ../configure --target=x86_64 --with-platform=efi && make -j$(nproc)
+           cd ../EFI32
+           ../configure --target=i386 --with-platform=efi && make -j$(nproc)
+           cd ../BIOS
+           ../configure --target=i386 --with-platform=pc --disable-nls && make -j$(nproc)
+
+    - name: make
+      run: ./scripts/repack_iso.sh
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: my-artifact
+        path: targets/x86_64/iso" # or path/to/artifact
+
