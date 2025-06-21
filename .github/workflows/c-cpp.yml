@@ -15,7 +15,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: install depends
-      run: apt install -y dosfstools mtools gparted gcc \
+      run: sudo apt install -y dosfstools mtools gparted gcc \
            cmake git bison libopts25 libselinux1-dev m4 help2man \
            libopts25-dev flex libfont-freetype-perl automake make \
            autotools-dev autopoint libfreetype6-dev texinfo python3 \
@@ -39,6 +39,6 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
-        name: my-artifact
-        path: targets/x86_64/iso" # or path/to/artifact
+        name: iso
+        path: targets/x86_64/iso 
 
